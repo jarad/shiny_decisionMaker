@@ -6,8 +6,8 @@ computer_experiments <- readRDS("computer_experiments.rds")
 grid <- expand.grid(x3 = seq(0,1,length=101),
                     x4 = seq(0,1,length=101))
 
-gp <- newGP(as.matrix(d[,c("x1","x2","x3","x4")]),
-            as.vector(as.matrix(d[,"y"])),
+gp <- newGP(as.matrix(computer_experiments[,c("x1","x2","x3","x4")]),
+            as.vector(as.matrix(computer_experiments[,"y"])),
             d = 2, g = 1e-6, dK = TRUE)
 
 mle <- mleGP(gp, tmax=200)
