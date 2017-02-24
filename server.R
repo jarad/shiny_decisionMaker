@@ -3,10 +3,10 @@ library(ggplot2)
 
 computer_experiments <- readRDS("computer_experiments.rds")
 
-grid <- expand.grid(x3 = seq(0,1,length=101),
-                    x4 = seq(0,1,length=101))
+grid <- expand.grid(x1 = seq(0,1,length=101),
+                    x2 = seq(0,1,length=101))
 
-gp <- newGP(as.matrix(computer_experiments[,c("x1","x2","x3","x4")]),
+gp <- newGP(as.matrix(computer_experiments[,c("x1","x2","x3")]),
             as.vector(as.matrix(computer_experiments[,"y"])),
             d = 2, g = 1e-6, dK = TRUE)
 
@@ -15,9 +15,8 @@ mle <- mleGP(gp, tmax=200)
 function(input, output, session) {
   
   updatedData <- reactive({
-    grid$x1 <- input$x1
-    grid$x2 <- input$x2
-    return(grid[c("x1","x2","x3","x4")])
+    grid$x3 <- input$n_rate
+    return(grid[c("x1","x2","x3")])
   })
   
   updatePredictions <- reactive({
@@ -28,12 +27,18 @@ function(input, output, session) {
     return(d)
   })
   
-  output$plot <- renderPlot({
+  withPrice <- reactive({
     d <- updatePredictions()
+    d$`Profit ($/acre)` <- d$mean*input$price - 4.58*200
+    return(d)
+  })
+  
+  output$plot <- renderPlot({
+    d <- withPrice()
     
-    ggplot(d, aes(x3, x4, fill=mean)) +
+    ggplot(d, aes(x1, x2, fill=`Profit ($/acre)`)) +
       geom_tile() + 
-      scale_fill_gradient(low="red", high="green") + 
+      scale_fill_gradient2() + 
       theme_bw()
   })
   

@@ -3,8 +3,8 @@
 pageWithSidebar(
   headerPanel('Decision Maker'),
   sidebarPanel(
-    sliderInput('x1', 'X1 Variable', 0, 1, 0.5),
-    sliderInput('x2', 'X2 Variable', 0, 1, 0.5)
+    sliderInput('price', 'Corn price ($/bushel)\nLinear and therefore quick updating', 0, 10, 3.78),
+    sliderInput('n_rate', 'Nitrogen rate (lbs/acre)\nNonlinear and therefore slower', 120, 180, 150)
   ),
   mainPanel(
     plotOutput('plot')
